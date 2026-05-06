@@ -1,2 +1,2 @@
 #!/bin/bash
-ss -tnp
+sudo ss -tnp
