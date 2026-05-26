@@ -3,6 +3,6 @@
   "tls_1.1_supported": "no",
   "tls_1.2_supported": "yes",
   "tls_1.3_supported": "yes",
-  "tls_1.2_cipher": "ECDHE-ECDSA-AES128-GCM-SHA256",
+  "tls_1.2_cipher": "ECDHE-ECDSA-AES256-GCM-SHA384",
   "tls_1.3_cipher": "TLS_AES_128_GCM_SHA256"
 }
