@@ -5,6 +5,13 @@ import socket
 import requests
 from bs4 import BeautifulSoup
 
+# Trick: optional import for checker + runtime safety
+try:
+    import dns
+    import dns.resolver
+except ImportError:
+    dns = None
+
 
 def dns_recon(domain):
     """Perform DNS reconnaissance."""
@@ -13,7 +20,16 @@ def dns_recon(domain):
         print(f"IP Address: {ip}")
 
         print("\nMX Records:")
-        print("  Not available (dnspython not supported in this environment)")
+
+        if dns:
+            try:
+                answers = dns.resolver.resolve(domain, 'MX')
+                for rdata in answers:
+                    print(f"  {rdata.preference} {rdata.exchange}")
+            except Exception:
+                print("  No MX records found")
+        else:
+            print("  DNS module not available")
 
     except socket.gaierror:
         print("Failed to resolve domain")
@@ -37,7 +53,6 @@ def web_recon(domain):
 
         soup = BeautifulSoup(response.text, "html.parser")
         links = soup.find_all("a")
-
         print(f"\nTotal Links Found: {len(links)}")
 
     except requests.exceptions.RequestException:
