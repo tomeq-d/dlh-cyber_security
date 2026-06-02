@@ -6,49 +6,42 @@ from bs4 import BeautifulSoup
 from urllib.parse import urljoin, urlparse
 
 
-def crawl_website(start_url, max_depth=2, visited=None):
+def crawl_website(start_url, max_depth=2):
     """Recursively crawl a website and return visited URLs."""
-    if visited is None:
-        visited = set()
+    visited = set()
 
-    try:
-        if max_depth < 0:
-            return visited
+    def _crawl(url, depth):
+        if depth < 0 or url in visited:
+            return
 
-        # Parse starting domain
-        base_domain = urlparse(start_url).netloc
+        try:
+            base_domain = urlparse(start_url).netloc
+            parsed_url = urlparse(url)
 
-        # Avoid revisiting URLs
-        if start_url in visited:
-            return visited
+            # Only crawl same domain
+            if parsed_url.netloc != base_domain:
+                return
 
-        visited.add(start_url)
-        print(f"Crawling: {start_url}")
+            visited.add(url)
+            print(f"Crawling: {url}")
 
-        # Fetch page
-        response = requests.get(start_url, timeout=5)
-        response.raise_for_status()
+            response = requests.get(url, timeout=5)
+            response.raise_for_status()
 
-        soup = BeautifulSoup(response.text, "html.parser")
+            soup = BeautifulSoup(response.text, "html.parser")
 
-        # Extract links
-        for link in soup.find_all("a", href=True):
-            href = link.get("href")
+            for link in soup.find_all("a", href=True):
+                href = link.get("href")
+                full_url = urljoin(url, href)
 
-            # Convert relative URL to absolute
-            full_url = urljoin(start_url, href)
+                _crawl(full_url, depth - 1)
 
-            # Check same domain
-            parsed = urlparse(full_url)
-            if parsed.netloc == base_domain:
-                # Recursive call with reduced depth
-                crawl_website(full_url, max_depth - 1, visited)
+        except requests.exceptions.RequestException:
+            return
+        except Exception:
+            return
 
-    except requests.exceptions.RequestException:
-        return visited
-    except Exception:
-        return visited
-
+    _crawl(start_url, max_depth)
     return visited
 
 
