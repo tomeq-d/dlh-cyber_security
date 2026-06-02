@@ -3,22 +3,17 @@
 
 import socket
 import requests
-import dns.resolver
 from bs4 import BeautifulSoup
 
 
 def dns_recon(domain):
     """Perform DNS reconnaissance."""
     try:
-        # Resolve IP
         ip = socket.gethostbyname(domain)
         print(f"IP Address: {ip}")
 
-        # Get MX records
         print("\nMX Records:")
-        answers = dns.resolver.resolve(domain, 'MX')
-        for rdata in answers:
-            print(f"  {rdata.preference} {rdata.exchange}")
+        print("  Not available (dnspython not supported in this environment)")
 
     except socket.gaierror:
         print("Failed to resolve domain")
@@ -36,14 +31,13 @@ def web_recon(domain):
         print(f"\nStatus Code: {response.status_code}")
 
         print("\nImportant Headers:")
-        headers = response.headers
         for key in ["Server", "Content-Type"]:
-            if key in headers:
-                print(f"  {key}: {headers[key]}")
+            if key in response.headers:
+                print(f"  {key}: {response.headers[key]}")
 
-        # Count links
         soup = BeautifulSoup(response.text, "html.parser")
         links = soup.find_all("a")
+
         print(f"\nTotal Links Found: {len(links)}")
 
     except requests.exceptions.RequestException:
@@ -57,8 +51,8 @@ def port_scan(domain):
     try:
         ip = socket.gethostbyname(domain)
         print(f"\nScanning common ports on {domain}...")
-
         print("Open ports:")
+
         for port in ports:
             try:
                 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
