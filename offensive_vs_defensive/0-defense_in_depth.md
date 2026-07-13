@@ -1,4 +1,4 @@
-[200~a# Defense in Depth: The Bedrock of Modern Cybersecurity
+# Defense in Depth: The Bedrock of Modern Cybersecurity
 
 *Part 0 of the "Offensive vs Defensive Security" series*
 
