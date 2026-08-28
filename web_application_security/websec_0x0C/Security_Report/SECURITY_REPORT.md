@@ -71,15 +71,15 @@ DevTools verification across three panels confirmed full exploitation:
 
 - **Console** — Stage 1 payload executed via `setTimeout`, targeting `document.getElementById("tracking-id")`, exfiltrating `document.cookie` to `/attacker/api/exfil`.
 
-  ![Console showing executed payload](screenshots/task0-01-console-payload.png)
+  ![Console showing executed payload](task0-01-console-payload.png)
 
 - **Network** — two calls fired as expected: a `POST` to `exfil` (200, JSON response) and a `GET` to `track?t=...` (200, response `{"status": "tracked"}`).
 
-  ![Network tab showing exfil and track requests](screenshots/task0-02-network-response.png)
+  ![Network tab showing exfil and track requests](task0-02-network-response.png)
 
 - **Stage 3 response (advanced search)** — the tracking response returned the flag directly in its JSON body: `{"ref": "FLAG{9ecece26496c2f4155871b16f81a18d3}", "status": "tracked"}`, confirmed against the page rendering `Advanced search: TESTINPUT` with the reflected query unescaped in the heading.
 
-  ![Tracking response containing the flag](screenshots/task0-03-flag-response.png)
+  ![Tracking response containing the flag](task0-03-flag-response.png)
 
 ### Real-World Impact
 
