@@ -222,4 +222,4 @@ the invoice PDF.
   distinct and often-overlooked SSRF surface, especially when the
   rendering engine runs as a separate process/container with different
   network visibility than the main application.
-F
+
