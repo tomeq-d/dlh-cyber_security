@@ -28,8 +28,9 @@ def get_heap_range(pid):
     except FileNotFoundError:
         error_exit("Error: no process found with pid {}".format(pid))
     except PermissionError:
-        error_exit("Error: permission denied reading maps of pid {}"
-                    .format(pid))
+        error_exit(
+            "Error: permission denied reading maps of pid {}".format(pid)
+        )
     return None, None
 
 
@@ -47,10 +48,7 @@ def read_write_heap(pid, search_string, replace_string):
             "Error: replace_string must not be longer than search_string"
         )
 
-    # pad the replacement so the overall buffer length stays identical
-    replace_bytes = replace_bytes + b"\x00" * (
-        len(search_bytes) - len(replace_bytes)
-    )
+    replace_bytes += b"\x00" * (len(search_bytes) - len(replace_bytes))
 
     mem_path = "/proc/{}/mem".format(pid)
     try:
@@ -66,14 +64,10 @@ def read_write_heap(pid, search_string, replace_string):
                 )
 
             found_addr = start + offset
-            print("[+] Found '{}' at address {}"
-                  .format(search_string, hex(found_addr)))
-
             mem_file.seek(found_addr)
             mem_file.write(replace_bytes)
 
-            print("[+] Replaced with '{}' at address {}"
-                  .format(replace_string, hex(found_addr)))
+            print("SUCCESS!")
     except FileNotFoundError:
         error_exit("Error: no process found with pid {}".format(pid))
     except PermissionError:
@@ -89,8 +83,7 @@ def main():
     """Parse arguments and run the heap search/replace"""
     if len(sys.argv) != 4:
         error_exit(
-            "Usage: {} pid search_string replace_string"
-            .format(sys.argv[0])
+            "Usage: {} pid search_string replace_string".format(sys.argv[0])
         )
 
     pid_arg, search_string, replace_string = sys.argv[1:4]
