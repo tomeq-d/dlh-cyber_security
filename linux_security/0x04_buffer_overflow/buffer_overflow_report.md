@@ -1,6 +1,6 @@
 # Buffer Overflow Attacks: How a Few Extra Bytes Can Compromise a Whole System
 
-*(Insert the header image — `buffer_overflow_diagram.svg` / exported PNG — at the very top of the post before publishing.)*
+---
 
 ## Introduction
 
@@ -84,6 +84,8 @@ security — not just a historical curiosity.
 To understand a buffer overflow, it helps to understand two regions of a
 process's virtual memory where buffers commonly live: **the stack** and
 **the heap**.
+
+![Buffer Overflow Diagram](buffer_overflow_diagram.png)
 
 ### The stack
 
