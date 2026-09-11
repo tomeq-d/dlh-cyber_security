@@ -48,7 +48,8 @@ def read_write_heap(pid, search_string, replace_string):
             "Error: replace_string must not be longer than search_string"
         )
 
-    replace_bytes += b"\x00" * (len(search_bytes) - len(replace_bytes))
+    padding_needed = len(search_bytes) - len(replace_bytes)
+    padded_replace_bytes = replace_bytes + b"\x00" * padding_needed
 
     mem_path = "/proc/{}/mem".format(pid)
     try:
@@ -65,9 +66,13 @@ def read_write_heap(pid, search_string, replace_string):
 
             found_addr = start + offset
             mem_file.seek(found_addr)
-            mem_file.write(replace_bytes)
+            mem_file.write(padded_replace_bytes)
 
-            print("SUCCESS!")
+            if padding_needed > 0:
+                print("[+] Found '{}' at address {}"
+                      .format(search_string, hex(found_addr)))
+                print("[+] Replaced with '{}' at address {}"
+                      .format(replace_string, hex(found_addr)))
     except FileNotFoundError:
         error_exit("Error: no process found with pid {}".format(pid))
     except PermissionError:
@@ -101,3 +106,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
