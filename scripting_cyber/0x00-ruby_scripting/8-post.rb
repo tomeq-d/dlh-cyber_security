@@ -22,5 +22,10 @@ def post_request(url, body_params)
 
   puts "Response status: #{response.code} #{response.message}"
   puts 'Response body:'
-  puts JSON.pretty_generate(JSON.parse(response.body))
+  parsed_body = JSON.parse(response.body)
+  if parsed_body.respond_to?(:empty?) && parsed_body.empty?
+    puts parsed_body.to_json
+  else
+    puts JSON.pretty_generate(parsed_body)
+  end
 end
