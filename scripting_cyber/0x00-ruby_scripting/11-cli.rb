@@ -49,6 +49,7 @@ if options[:add]
   save_tasks(tasks)
   puts "Task '#{options[:add]}' added."
 elsif options[:list]
+  puts 'Tasks:'
   tasks.each_with_index { |task, index| puts "#{index + 1}. #{task}" }
 elsif options[:remove]
   index = options[:remove] - 1
