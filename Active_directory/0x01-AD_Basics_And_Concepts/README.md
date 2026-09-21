@@ -10,36 +10,6 @@ each seeded with decoy flags in the same format as the real ones
 required verifying the found flag against the checker before trusting it,
 since format alone (`FLAGn{64-hex-chars}`) does not guarantee correctness.
 
-## Initial (incorrect) enumeration attempt
-
-```bash
-ldapsearch -x -H ldap://192.168.178.91 -b "OU=LDAP-Project,DC=PENTESTLAB,DC=local" -s sub "(objectClass=user)" "*" "+"
-```
-
-Flag breakdown:
-- `-x` — use simple authentication (anonymous bind, no credentials supplied)
-- `-H ldap://192.168.178.91` — target LDAP server
-- `-b "OU=LDAP-Project,..."` — search base: start the search at this OU
-- `-s sub` — scope: search this object and everything below it (subtree)
-- `"(objectClass=user)"` — filter: only return objects of class `user`
-- `"*" "+"` — request all standard (`*`) and operational (`+`) attributes
-
-**Why this was insufficient:** the search base was scoped to
-`OU=LDAP-Project`, so it could never see the domain root object
-(`DC=PENTESTLAB,DC=local`), which is the *parent* of that OU — LDAP
-searches only look downward from the base. The `(objectClass=user)`
-filter also excluded the domain object itself, whose classes are
-`top`, `domain`, `domainDNS`, not `user`. This command *did* return a
-flag-shaped string (`FLAG0{921d2a56...}`, in Diana Reeves' `info`
-attribute), but it was a decoy for Task 0 — confirmed by checker
-rejection. The same hash string resurfaced later as the genuine
-Task 3 answer (see below), which made it a useful landmark rather
-than a dead end.
-
-The command was also useful for mapping the lab: it revealed
-account names, group memberships, and several other decoy flags
-used to orient later, more targeted searches.
-
 ---
 
 ## Task 0 — Domain Reconnaissance
